@@ -9,13 +9,10 @@ public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         int numberOfGuests = getGuests(reader);
-        Calculator calculator = new Calculator();
-        addProducts(calculator, reader);
-        System.out.println();
-        System.out.println("Добавленные товары:");
-        calculator.printAllEntries();
-        System.out.println();
-        calculator.printBill(numberOfGuests);
+        addProducts( reader);
+        System.out.println("Добавленные товары:\n");
+        Calculator.printAllEntries();
+        Calculator.getBill(numberOfGuests);
     }
 
     private static int getGuests(BufferedReader reader) throws IOException {
@@ -36,29 +33,35 @@ public class Main {
         }
     }
 
-    private static void addProducts(Calculator calculator, BufferedReader reader) throws IOException {
-        add(calculator, reader);
+    private static void addProducts(BufferedReader reader) throws IOException {
+        add(reader);
         while (true) {
             System.out.println("Хотите добавить ещё товар?");
             String choice = reader.readLine();
             if (choice.equalsIgnoreCase(endMe))
                 break;
             else
-                add(calculator, reader);
+                add(reader);
         }
     }
 
-    private static void add(Calculator calculator, BufferedReader reader) throws IOException {
+    private static void add(BufferedReader reader) throws IOException {
         try {
             System.out.println("Введите наименование товара:");
             String name = reader.readLine();
-            System.out.println("Введите цену товара:");
-            Double price = readDouble(reader);
-            calculator.addProduct(name, price);
+            while (true) {
+                System.out.println("Введите цену товара:");
+                double price = readDouble(reader);
+                if (price > 0) {
+                    Calculator.addProduct(name, price);
+                    break;
+                }
+                System.out.println("Цена товара должна быть больше нуля!");
+            }
             System.out.println("Товар успешно добавлен!");
         } catch (NumberFormatException e) {
             System.out.println("Некорректный ввод");
-            add(calculator, reader);
+            add(reader);
         }
     }
 
